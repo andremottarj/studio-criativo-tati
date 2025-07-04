@@ -1,0 +1,273 @@
+<pre><code class="language-bash">#!/bin/bash
+
+# ================================================================
+# 🚀 SCRIPT DE SETUP AUTOMÁTICO - STUDIO CRIATIVO TATI MOTTA
+# ================================================================
+
+echo "🎨 Configurando Studio Criativo Tati Motta..."
+echo "==============================================="
+
+# Cores para output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Função para printar com cor
+print_status() {
+    echo -e "${GREEN}✅ $1${NC}"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠️  $1${NC}"
+}
+
+print_error() {
+    echo -e "${RED}❌ $1${NC}"
+}
+
+print_info() {
+    echo -e "${BLUE}ℹ️  $1${NC}"
+}
+
+# Verificar se Git está instalado
+if ! command -v git &#x26;> /dev/null; then
+    print_error "Git não está instalado!"
+    print_info "Baixe em: https://git-scm.com/"
+    exit 1
+fi
+
+print_status "Git encontrado!"
+
+# Configurar Git (se não estiver configurado)
+if [[ -z $(git config --global user.name) ]]; then
+    print_warning "Configurando Git..."
+    read -p "📝 Digite seu nome: " user_name
+    read -p "📧 Digite seu email: " user_email
+    
+    git config --global user.name "$user_name"
+    git config --global user.email "$user_email"
+    
+    print_status "Git configurado com sucesso!"
+else
+    print_status "Git já está configurado!"
+fi
+
+# Criar pasta do projeto
+PROJECT_NAME="studio-criativo-tati"
+echo ""
+print_info "📁 Criando pasta do projeto: $PROJECT_NAME"
+
+if [[ -d "$PROJECT_NAME" ]]; then
+    print_warning "Pasta já existe! Entrando na pasta..."
+    cd "$PROJECT_NAME"
+else
+    mkdir "$PROJECT_NAME"
+    cd "$PROJECT_NAME"
+    print_status "Pasta criada!"
+fi
+
+# Inicializar repositório Git
+if [[ ! -d ".git" ]]; then
+    print_info "🔧 Inicializando repositório Git..."
+    git init
+    git branch -M main
+    print_status "Repositório inicializado!"
+else
+    print_status "Repositório Git já existe!"
+fi
+
+# Criar arquivos do projeto
+print_info "📄 Criando arquivos do projeto..."
+
+# Criar .gitignore
+cat > .gitignore &#x3C;&#x3C; 'EOF'
+# Dependências
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos de build
+dist/
+build/
+.cache/
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+
+# Arquivos do sistema
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Arquivos temporários
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Backup files
+*.bak
+*.backup
+EOF
+
+print_status ".gitignore criado!"
+
+# Criar README.md básico
+cat > README.md &#x3C;&#x3C; 'EOF'
+# 🎨 Studio Criativo Tati Motta
+
+> **Loja virtual de produtos personalizados** - Transformando ideias em presentes únicos!
+
+## 🚀 Sobre o Projeto
+
+Sistema completo de loja virtual para produtos personalizados, incluindo:
+
+### ✨ Funcionalidades
+- 🛍️ Catálogo de produtos com filtros
+- 🛒 Carrinho de compras completo
+- 📱 Integração WhatsApp
+- 🎨 Sistema de personalização
+- 📊 Painel administrativo
+- 💳 Checkout completo
+
+### 🛠️ Tecnologias
+- HTML5, CSS3, JavaScript
+- React (painel admin)
+- Tailwind CSS
+- localStorage para persistência
+
+## 📱 Contato
+
+- 📱 WhatsApp: [+55 22 99880-9406](https://wa.me/5522998809406)
+- 🌐 Instagram: [@tatimottastudiocriativo](https://instagram.com/tatimottastudiocriativo)
+
+---
+
+Desenvolvido com ❤️ para criar momentos únicos através de produtos personalizados.
+EOF
+
+print_status "README.md criado!"
+
+# Criar estrutura básica de arquivos
+touch index.html
+touch admin.html
+
+print_status "Arquivos básicos criados!"
+
+# Fazer primeiro commit
+print_info "📝 Fazendo primeiro commit..."
+git add .
+git commit -m "🎨 Inicial: Studio Criativo Tati Motta - Setup do projeto
+
+✨ Estrutura inicial criada:
+- 📁 Pasta do projeto configurada
+- 📄 Arquivos básicos criados
+- 🔧 Git configurado
+- 📝 README.md e .gitignore
+- 🚀 Pronto para desenvolvimento"
+
+print_status "Primeiro commit realizado!"
+
+# Instruções para conectar com GitHub
+echo ""
+print_info "🐙 PRÓXIMOS PASSOS PARA GITHUB:"
+echo "================================="
+echo ""
+echo "1. Vá para https://github.com"
+echo "2. Clique em 'New repository'"
+echo "3. Nome: studio-criativo-tati"
+echo "4. Descrição: Loja virtual de produtos personalizados"
+echo "5. Deixe público e NÃO marque 'Initialize with README'"
+echo "6. Clique 'Create repository'"
+echo ""
+echo "7. Depois execute estes comandos:"
+echo ""
+echo -e "${YELLOW}git remote add origin https://github.com/SEU-USUARIO/studio-criativo-tati.git${NC}"
+echo -e "${YELLOW}git push -u origin main${NC}"
+echo ""
+
+# Criar script de deploy
+cat > deploy.sh &#x3C;&#x3C; 'EOF'
+#!/bin/bash
+
+# Script de deploy rápido
+echo "🚀 Fazendo deploy das alterações..."
+
+# Verificar se há alterações
+if [[ -z $(git status --porcelain) ]]; then
+    echo "✅ Nenhuma alteração para commitar"
+    exit 0
+fi
+
+# Adicionar alterações
+git add .
+
+# Pedir mensagem de commit
+read -p "📝 Mensagem do commit: " commit_message
+
+# Fazer commit
+if [[ -z "$commit_message" ]]; then
+    git commit -m "📝 Atualização: alterações no projeto"
+else
+    git commit -m "$commit_message"
+fi
+
+# Push para GitHub
+git push
+
+echo "✅ Deploy concluído!"
+EOF
+
+chmod +x deploy.sh
+print_status "Script de deploy criado!"
+
+# Instruções finais
+echo ""
+print_status "🎉 SETUP COMPLETO!"
+echo "=================="
+echo ""
+print_info "📋 O que foi criado:"
+echo "- ✅ Pasta do projeto: $PROJECT_NAME"
+echo "- ✅ Repositório Git inicializado"
+echo "- ✅ Arquivos básicos criados"
+echo "- ✅ Primeiro commit realizado"
+echo "- ✅ Script de deploy criado"
+echo ""
+print_info "🚀 Para usar o script de deploy:"
+echo "- Execute: ./deploy.sh"
+echo "- Ou use: bash deploy.sh"
+echo ""
+print_info "🔧 Comandos úteis:"
+echo "- git status    # Ver alterações"
+echo "- git add .     # Adicionar alterações"
+echo "- git commit -m 'mensagem'  # Commitar"
+echo "- git push      # Enviar para GitHub"
+echo ""
+print_warning "⚠️  IMPORTANTE: Não se esqueça de conectar com o GitHub!"
+echo "Siga as instruções acima para criar o repositório remoto."
+echo ""
+print_status "🎨 Studio Criativo Tati Motta está pronto para desenvolvimento!"
+
+</code></pre>
